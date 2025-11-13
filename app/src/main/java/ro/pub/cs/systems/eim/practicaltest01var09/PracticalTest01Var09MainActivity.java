@@ -16,11 +16,20 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class PracticalTest01Var09MainActivity extends AppCompatActivity {
 
+    private int sum;
+    private StringBuffer allTerms = new StringBuffer();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_practical_test01_var09_main);
+
+        if (savedInstanceState != null) {
+            sum = savedInstanceState.getInt("savedSum");
+        } else {
+            sum = 0;
+        }
 
         Button addButton = findViewById(R.id.add_button);
         Button computeButton = findViewById(R.id.compute_button);
@@ -52,6 +61,14 @@ public class PracticalTest01Var09MainActivity extends AppCompatActivity {
                 intent.setAction("ro.pub.cs.systems.eim.practicaltest01var09.COMPUTE");
                 intent.putExtra("all_terms", result.getText().toString());
 
+                allTerms.delete(0, allTerms.length());
+
+                if (result.getText().length() != 0) {
+                    allTerms.append(result.getText().toString());
+                }
+
+                Log.d("MAIN ACTIVITY", "onCompute: " + allTerms);
+
                 startActivityForResult(intent, 2025);
             }
         });
@@ -60,7 +77,38 @@ public class PracticalTest01Var09MainActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 2025 && resultCode == RESULT_OK) {
-            Log.d("MAIN ACTIVITY", data.getIntExtra("result", -1) + "");
+            int resultSum = data.getIntExtra("result", -1);
+            sum = resultSum;
+            allTerms.delete(0, allTerms.length());
+            allTerms.append(sum + "");
+            Log.d("MAIN ACTIVITY", resultSum + "");
         }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+
+        String savedterms = savedInstanceState.getString("allTerms");
+        int savedSum = savedInstanceState.getInt("savedSum");
+
+        if(Integer.parseInt(allTerms.toString()) == sum) {
+            EditText result = findViewById(R.id.result);
+            result.setText(sum);
+        }
+
+        if (sum == 0) {
+            sum = savedSum;
+        }
+
+        Log.d("MAIN ACTIVITY", "onRestoreInstanceState: " + sum);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+
+        savedInstanceState.putInt("savedSum", sum);
+        savedInstanceState.putString("allTerms", allTerms.toString());
     }
 }
