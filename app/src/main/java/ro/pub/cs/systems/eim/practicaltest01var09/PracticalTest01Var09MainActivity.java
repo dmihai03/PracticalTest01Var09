@@ -61,14 +61,6 @@ public class PracticalTest01Var09MainActivity extends AppCompatActivity {
                 intent.setAction("ro.pub.cs.systems.eim.practicaltest01var09.COMPUTE");
                 intent.putExtra("all_terms", result.getText().toString());
 
-                allTerms.delete(0, allTerms.length());
-
-                if (result.getText().length() != 0) {
-                    allTerms.append(result.getText().toString());
-                }
-
-                Log.d("MAIN ACTIVITY", "onCompute: " + allTerms);
-
                 startActivityForResult(intent, 2025);
             }
         });
@@ -79,8 +71,7 @@ public class PracticalTest01Var09MainActivity extends AppCompatActivity {
         if (requestCode == 2025 && resultCode == RESULT_OK) {
             int resultSum = data.getIntExtra("result", -1);
             sum = resultSum;
-            allTerms.delete(0, allTerms.length());
-            allTerms.append(sum + "");
+
             Log.d("MAIN ACTIVITY", resultSum + "");
         }
     }
@@ -89,13 +80,8 @@ public class PracticalTest01Var09MainActivity extends AppCompatActivity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
 
-        String savedterms = savedInstanceState.getString("allTerms");
         int savedSum = savedInstanceState.getInt("savedSum");
 
-        if(Integer.parseInt(allTerms.toString()) == sum) {
-            EditText result = findViewById(R.id.result);
-            result.setText(sum);
-        }
 
         if (sum == 0) {
             sum = savedSum;
